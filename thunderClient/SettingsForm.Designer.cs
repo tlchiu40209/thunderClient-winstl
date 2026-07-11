@@ -91,7 +91,7 @@
             // 
             // numLon
             // 
-            numLon.DecimalPlaces = 3;
+            numLon.DecimalPlaces = 6;
             numLon.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
             numLon.Location = new Point(139, 107);
             numLon.Maximum = new decimal(new int[] { 180, 0, 0, 0 });
@@ -111,7 +111,7 @@
             // 
             // numLat
             // 
-            numLat.DecimalPlaces = 3;
+            numLat.DecimalPlaces = 6;
             numLat.Increment = new decimal(new int[] { 1, 0, 0, 196608 });
             numLat.Location = new Point(139, 136);
             numLat.Maximum = new decimal(new int[] { 90, 0, 0, 0 });
@@ -232,6 +232,7 @@
             ckbStartup.TabIndex = 15;
             ckbStartup.Text = "電腦帳戶登入後啟動程式";
             ckbStartup.UseVisualStyleBackColor = true;
+            ckbStartup.CheckedChanged += ckbStartup_Changed;
             // 
             // SettingsForm
             // 
