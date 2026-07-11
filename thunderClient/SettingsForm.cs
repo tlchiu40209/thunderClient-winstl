@@ -107,11 +107,6 @@ namespace thunderClient
             {
                 MessageBox.Show("經緯度輸入錯誤", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                /*
-                
-                
-                Properties.Settings.Default.ActionCmd = txtCmd.Text;
-                Properties.Settings.Default.Save();*/
             }
 
             try
@@ -151,27 +146,48 @@ namespace thunderClient
             // 設定開機啟動
             if (ckbStartup.Checked)
             {
-                var startupCheck = MessageBox.Show(
-                    "請先將程式移到您想固定存放的資料夾，再開啟此功能。如果事後移動程式的位置，自動啟動將會失效。",
-                    "提醒",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning
-                );
-                if (startupCheck == DialogResult.No)
+                Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
+                if (key.GetValue("thunderClient") != null)
                 {
-                    ckbStartup.Checked = false;
-                    return;
+                    if (key.GetValue("thunderClient").ToString() != Application.ExecutablePath)
+                    {
+                        MessageBox.Show(
+                            "檢測到開機啟動的程式路徑與目前程式路徑不符，程式將會自動修正位置。",
+                            "提醒",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                        );
+                        key.SetValue("thunderClient", Application.ExecutablePath);
+                        ckbStartup.Checked = true;
+                        return;
+                    }
                 }
                 else
                 {
-                    Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
-                    key.SetValue("thunderClient", Application.ExecutablePath);
+                    var startupCheck = MessageBox.Show(
+                        "請先將程式移到您想固定存放的資料夾，再開啟此功能。如果事後移動程式的位置，自動啟動將會失效。",
+                        "提醒",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
+                        if (startupCheck == DialogResult.No)
+                        {
+                            ckbStartup.Checked = false;
+                            return;
+                        }
+                        else
+                        {
+                            key.SetValue("thunderClient", Application.ExecutablePath);
+                        }
                 }
             }
             else
             {
                 Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
-                key.DeleteValue("thunderClient", false);
+                if (key.GetValue("thunderClient") != null)
+                {
+                    key.DeleteValue("thunderClient", false);
+                }
             }
         }
 
